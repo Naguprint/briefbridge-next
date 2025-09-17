@@ -477,7 +477,7 @@ function Testimonials() {
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           {ts.map((t, i) => (
             <figure key={i} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-              <blockquote className="text-lg tracking-tight">"{t.quote}"</blockquote>
+              <blockquote className="text-lg tracking-tight">&quot;{t.quote}&quot;</blockquote>
               <figcaption className="mt-4 text-sm text-slate-600">{t.name} — {t.role}</figcaption>
             </figure>
           ))}
@@ -663,7 +663,7 @@ function BriefForm({ onClose }) {
             </svg>
           </div>
           <h3 className="text-xl font-bold">Brief submitted successfully!</h3>
-          <p className="mt-2 text-sm text-slate-600">We'll notify matching professionals about your project.</p>
+          <p className="mt-2 text-sm text-slate-600">We&apos;ll notify matching professionals about your project.</p>
         </div>
       </div>
     )
@@ -675,7 +675,7 @@ function BriefForm({ onClose }) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-xl font-bold tracking-tight">Post a brief</h3>
-            <p className="mt-1 text-sm text-slate-600">Tell us about your project and timing. We'll notify matching pros.</p>
+           <p className="mt-1 text-sm text-slate-600">Tell us about your project and timing. We&apos;ll notify matching pros.</p>
           </div>
           <button onClick={onClose} className="rounded-full border border-slate-300 p-2 hover:bg-slate-50" aria-label="Close">
             <X className="h-4 w-4" />
