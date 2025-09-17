@@ -597,3 +597,307 @@ function Footer() {
     </footer>
   )
 }
+function BriefForm({ onClose }) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(false)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError(null)
+
+    const formData = new FormData(e.target)
+    
+    const brief = {
+      title: formData.get('title'),
+      category: formData.get('category'),
+      budgetMin: formData.get('budgetMin') ? parseInt(formData.get('budgetMin')) : null,
+      budgetMax: formData.get('budgetMax') ? parseInt(formData.get('budgetMax')) : null,
+      timeline: formData.get('timeline'),
+      details: formData.get('details'),
+      name: formData.get('name'),
+      email: formData.get('email')
+    }
+
+    try {
+      const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:3000/api/briefs'
+        : '/api/briefs'
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ brief })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong')
+      }
+
+      setSuccess(true)
+      
+      setTimeout(() => {
+        onClose()
+      }, 2000)
+
+    } catch (err) {
+      console.error('Error submitting brief:', err)
+      setError(err.message || 'Failed to submit brief. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (success) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+        <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl ring-1 ring-slate-200 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+            <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold">Brief submitted successfully!</h3>
+          <p className="mt-2 text-sm text-slate-600">We'll notify matching professionals about your project.</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/40 p-4">
+      <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3 className="text-xl font-bold tracking-tight">Post a brief</h3>
+            <p className="mt-1 text-sm text-slate-600">Tell us about your project and timing. We'll notify matching pros.</p>
+          </div>
+          <button onClick={onClose} className="rounded-full border border-slate-300 p-2 hover:bg-slate-50" aria-label="Close">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        {error && (
+          <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
+          <div className="grid gap-2">
+            <label className="text-sm font-medium">Project title *</label>
+            <input 
+              name="title"
+              required
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+              placeholder="e.g., Website redesign for coffee brand" 
+            />
+          </div>
+          
+          <div className="grid gap-2">
+            <label className="text-sm font-medium">Category</label>
+            <select 
+              name="category"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option>Websites</option>
+              <option>E-commerce</option>
+              <option>Logos & Branding</option>
+              <option>UI/UX</option>
+              <option>Graphic Design</option>
+              <option>Copywriting</option>
+              <option>SEO</option>
+              <option>Programming</option>
+            </select>
+          </div>
+          
+          <div className="grid gap-2">
+            <label className="text-sm font-medium">Budget (EUR)</label>
+            <div className="flex gap-3">
+              <input 
+                name="budgetMin"
+                type="number" 
+                className="w-1/2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                placeholder="Min" 
+              />
+              <input 
+                name="budgetMax"
+                type="number" 
+                className="w-1/2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+                placeholder="Max" 
+              />
+            </div>
+          </div>
+          
+          <div className="grid gap-2">
+            <label className="text-sm font-medium">Timeline</label>
+            <select 
+              name="timeline"
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option>ASAP (within 1–2 weeks)</option>
+              <option>Within 1 month</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+          
+          <div className="grid gap-2">
+            <label className="text-sm font-medium">Project details *</label>
+            <textarea 
+              name="details"
+              required
+              rows={5} 
+              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+              placeholder="Describe goals, deliverables, tech stack, examples you like, etc." 
+            />
+          </div>
+          
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Your name</label>
+              <input 
+                name="name"
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+              />
+            </div>
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Email</label>
+              <input 
+                name="email"
+                type="email" 
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" 
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between gap-3">
+            <label className="flex items-center gap-2 text-sm text-slate-600">
+              <input type="checkbox" className="h-4 w-4 rounded border-slate-300" required /> 
+              I agree to the Terms and Privacy
+            </label>
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit brief'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+function OfferRow({ name, price, eta, rating }) {
+  return (
+    <div className="mb-3 flex items-center justify-between rounded-xl bg-white p-3 shadow-sm ring-1 ring-slate-100">
+      <div>
+        <div className="font-medium">{name}</div>
+        <div className="text-xs text-slate-500">ETA {eta}</div>
+      </div>
+      <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-1 text-amber-500"><Star className="h-4 w-4" /><span className="text-slate-800">{rating}</span></div>
+        <div className="font-semibold">{price}</div>
+      </div>
+    </div>
+  )
+}
+
+// --- Icons (simple inline SVGs to avoid external deps) ---
+function Logo({ className = '' }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="9" height="9" rx="2" className="fill-indigo-600" />
+      <rect x="13" y="2" width="9" height="9" rx="2" className="fill-fuchsia-500" />
+      <rect x="2" y="13" width="9" height="9" rx="2" className="fill-sky-400" />
+      <rect x="13" y="13" width="9" height="9" rx="2" className="fill-emerald-500" />
+    </svg>
+  )
+}
+
+function Sparkle(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M12 3l2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4z" />
+    </svg>
+  )
+}
+
+function Play(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M8 5v14l11-7-11-7z" />
+    </svg>
+  )
+}
+
+function Shield(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M12 2l8 4v6c0 5-3.8 9.2-8 10-4.2-.8-8-5-8-10V6l8-4z" />
+    </svg>
+  )
+}
+
+function Clock(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5h-2v6l5 3 1-1.7-4-2.3V7z" />
+    </svg>
+  )
+}
+
+function Star(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M12 3l3 6 6 1-4.5 4.3 1 6.7L12 18l-5.5 3 1-6.7L3 10l6-1 3-6z" />
+    </svg>
+  )
+}
+
+function Plus(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M11 5h2v14h-2z" /><path d="M5 11h14v2H5z" />
+    </svg>
+  )
+}
+
+function ArrowRight(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M13 5l7 7-7 7-1.4-1.4L16.2 13H4v-2h12.2L11.6 6.4 13 5z" />
+    </svg>
+  )
+}
+
+function X(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3 1.4 1.4z" />
+    </svg>
+  )
+}
+
+function Pencil(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" />
+      <path d="M20.71 7.04a1 1 0 000-1.41L18.37 3.3a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.84z" />
+    </svg>
+  )
+}
+
+function Bolt(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={props.className}>
+      <path d="M11 21l6-10h-4l2-8-8 12h4l-2 6z" />
+    </svg>
+  )
+}
