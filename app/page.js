@@ -1,0 +1,561 @@
+'use client';
+
+import React, { useState, useEffect } from 'react'
+
+export default function Page() {
+  const [openForm, setOpenForm] = useState(false)
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <SiteBackground />
+      <Header onCTAClick={() => setOpenForm(true)} />
+      <main>
+        <Hero onCTAClick={() => setOpenForm(true)} />
+        <LogosBar />
+        <HowItWorks />
+        <Categories onCTAClick={() => setOpenForm(true)} />
+        <FeaturedPros />
+        <Stats />
+        <Testimonials />
+        <FAQ />
+        <CTA onCTAClick={() => setOpenForm(true)} />
+      </main>
+      <Footer />
+      {openForm && <BriefForm onClose={() => setOpenForm(false)} />}
+    </div>
+  )
+}
+
+function SiteBackground() {
+  return (
+    <div aria-hidden className="fixed inset-0 -z-10 overflow-hidden">
+      <div className="pointer-events-none absolute -top-32 -left-32 h-80 w-80 rounded-full bg-gradient-to-br from-indigo-200 to-fuchsia-200 opacity-70 blur-3xl" />
+      <div className="pointer-events-none absolute top-1/3 -right-24 h-96 w-96 rounded-full bg-gradient-to-br from-teal-200 to-emerald-200 opacity-60 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 left-1/4 h-72 w-72 rounded-full bg-gradient-to-tr from-amber-200 to-rose-200 opacity-60 blur-3xl" />
+    </div>
+  )
+}
+
+function Header({ onCTAClick }) {
+  return (
+    <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/60 border-b border-slate-100">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <a href="#" className="flex items-center gap-2">
+            <Logo className="h-7 w-7" />
+            <span className="font-semibold tracking-tight">BriefBridge</span>
+          </a>
+          <nav className="hidden md:flex items-center gap-8 text-sm text-slate-600">
+            <a href="#how" className="hover:text-slate-900">How it works</a>
+            <a href="#categories" className="hover:text-slate-900">Categories</a>
+            <a href="#pros" className="hover:text-slate-900">For clients</a>
+            <a href="#faq" className="hover:text-slate-900">FAQ</a>
+          </nav>
+          <div className="flex items-center gap-3">
+            <button className="hidden sm:inline-flex rounded-full border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-white shadow-sm" aria-label="Sign in">Sign in</button>
+            <button onClick={onCTAClick} className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-indigo-500">Post a brief</button>
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function Hero({ onCTAClick }) {
+  return (
+    <section className="relative overflow-hidden">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-10 py-16 md:grid-cols-2 md:py-24">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-slate-600 shadow ring-1 ring-slate-200">
+              <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
+              New: Faster matching & curated pros
+            </div>
+            <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">
+              Hire top creative & web pros
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-fuchsia-600">within 24 hours</span>
+            </h1>
+            <p className="mt-4 text-lg text-slate-600">
+              Describe your project once. Receive tailored offers. Compare, chat, and hire with confidence.
+            </p>
+            <div className="mt-6 flex flex-col sm:flex-row items-stretch gap-3">
+              <button onClick={onCTAClick} className="inline-flex items-center justify-center gap-2 rounded-full bg-indigo-600 px-6 py-3 text-white font-semibold shadow hover:bg-indigo-500">
+                <Sparkle className="h-5 w-5" /> Post a brief
+              </button>
+              <a href="#how" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+                <Play className="h-5 w-5" /> See how it works
+              </a>
+            </div>
+            <div className="mt-6 flex items-center gap-6 text-sm text-slate-600">
+              <div className="flex items-center gap-2"><Shield className="h-5 w-5 text-emerald-600" /> Verified pros</div>
+              <div className="flex items-center gap-2"><Clock className="h-5 w-5 text-indigo-600" /> Quotes in a day</div>
+              <div className="flex items-center gap-2"><Star className="h-5 w-5 text-amber-500" /> Client‑rated</div>
+            </div>
+          </div>
+          <div className="relative">
+            <div className="relative mx-auto w-full max-w-md rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-200">
+              <div className="mb-4 flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500" />
+                <div className="text-sm">
+                  <div className="font-semibold">Acme Roastery</div>
+                  <div className="text-slate-500">Brand refresh & ecommerce</div>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100">
+                <div className="mb-3 text-sm font-semibold text-slate-700">Incoming offers</div>
+                <OfferRow name="Northwind Studio" price="€2,950" eta="2 weeks" rating={4.8} />
+                <OfferRow name="Pixel&Paper" price="€2,400" eta="10 days" rating={4.6} />
+                <OfferRow name="Bold Web Co" price="€3,200" eta="3 weeks" rating={4.9} />
+              </div>
+              <button onClick={onCTAClick} className="mt-6 w-full rounded-xl bg-indigo-600 py-3 text-white font-semibold shadow hover:bg-indigo-500">Start your project</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function LogosBar() {
+  const logos = ["Figma", "Shopify", "WordPress", "Webflow", "Woo", "Framer"]
+  return (
+    <section className="py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 opacity-70">
+          {logos.map((l) => (
+            <div key={l} className="text-sm font-semibold text-slate-500">{l}</div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function HowItWorks() {
+  const steps = [
+    {
+      title: 'Post a brief',
+      desc: 'Answer a few guided questions. It takes ~2 minutes.',
+      icon: <Pencil className="h-6 w-6" />,
+    },
+    {
+      title: 'Get offers fast',
+      desc: 'Receive multiple proposals and chat in one place.',
+      icon: <Bolt className="h-6 w-6" />,
+    },
+    {
+      title: 'Hire with confidence',
+      desc: 'Review ratings, portfolios and timelines. Pick the best fit.',
+      icon: <Shield className="h-6 w-6" />,
+    },
+  ]
+  return (
+    <section id="how" className="py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How it works</h2>
+          <p className="mt-3 text-slate-600">Simple, transparent and built for speed.</p>
+        </div>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {steps.map((s) => (
+            <div key={s.title} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">{s.icon}</div>
+              <h3 className="text-lg font-semibold">{s.title}</h3>
+              <p className="mt-1 text-slate-600">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Categories({ onCTAClick }) {
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  
+  const cats = [
+    'Websites', 'E-commerce', 'Logos & Branding', 'Graphic Design', 'UI/UX', 'Illustration',
+    'SEO', 'Copywriting', 'Social Media', 'Photography', 'Video', 'Programming'
+  ]
+  
+  return (
+    <>
+      <section id="categories" className="py-20 bg-gradient-to-b from-white to-slate-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Popular categories</h2>
+              <p className="mt-2 text-slate-600">Browse specialties or just post a brief and let pros come to you.</p>
+            </div>
+            <button onClick={onCTAClick} className="hidden md:inline-flex rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-slate-800">Post a brief</button>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {cats.map((c) => (
+              <button 
+                key={c} 
+                onClick={() => setSelectedCategory(c)}
+                className="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold">{c}</h3>
+                  <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-slate-700" />
+                </div>
+                <p className="mt-1 text-sm text-slate-600">Hand-picked freelancers & studios.</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {selectedCategory && (
+        <CategoryBriefsModal 
+          category={selectedCategory} 
+          onClose={() => setSelectedCategory(null)} 
+        />
+      )}
+    </>
+  )
+}
+
+function CategoryBriefsModal({ category, onClose }) {
+  const [briefs, setBriefs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [isPaid, setIsPaid] = useState(false)
+  const [paymentLoading, setPaymentLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const paidCategories = JSON.parse(localStorage.getItem('paidCategories') || '[]')
+    if (paidCategories.includes(category)) {
+      setIsPaid(true)
+      fetchBriefs()
+    } else {
+      setLoading(false)
+    }
+  }, [category])
+
+  const fetchBriefs = async () => {
+    try {
+      const response = await fetch('/api/briefs')
+      const data = await response.json()
+      const filteredBriefs = data.briefs.filter(b => b.category === category)
+      setBriefs(filteredBriefs)
+    } catch (err) {
+      setError('Failed to load briefs')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handlePayment = async () => {
+    setPaymentLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category,
+          priceAmount: 2900,
+          successUrl: window.location.href + '?payment=success',
+          cancelUrl: window.location.href
+        })
+      })
+      
+      const data = await response.json()
+      
+      if (data.sessionUrl) {
+        window.location.href = data.sessionUrl
+      } else {
+        throw new Error('Failed to create checkout session')
+      }
+      
+    } catch (err) {
+      setError('Payment failed. Please try again.')
+    } finally {
+      setPaymentLoading(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+      <div className="w-full max-w-4xl max-h-[90vh] overflow-auto rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
+        <div className="sticky top-0 bg-white border-b border-slate-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold">{category} Briefs</h2>
+              <p className="mt-1 text-sm text-slate-600">
+                {isPaid ? `${briefs.length} active briefs` : 'Unlock access to see all briefs'}
+              </p>
+            </div>
+            <button onClick={onClose} className="rounded-full border border-slate-300 p-2 hover:bg-slate-50">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6">
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-indigo-600"></div>
+              <p className="mt-2 text-sm text-slate-600">Loading...</p>
+            </div>
+          ) : !isPaid ? (
+            <div className="text-center py-12">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
+                <Shield className="h-8 w-8 text-indigo-600" />
+              </div>
+              <h3 className="text-xl font-bold">Access {category} Briefs</h3>
+              <p className="mt-2 text-slate-600 max-w-md mx-auto">
+                Get instant access to all briefs in this category. Connect directly with clients looking for {category.toLowerCase()} services.
+              </p>
+              
+              <div className="mt-8 max-w-sm mx-auto rounded-2xl bg-slate-50 p-6 ring-1 ring-slate-200">
+                <div className="text-3xl font-bold">€29</div>
+                <div className="text-sm text-slate-600 mt-1">One-time payment</div>
+                <ul className="mt-4 space-y-2 text-sm text-left">
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">✓</span> Instant access to all {category} briefs
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">✓</span> Direct client contact details
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-green-600">✓</span> New briefs for 30 days
+                  </li>
+                </ul>
+                
+                {error && (
+                  <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                    {error}
+                  </div>
+                )}
+                
+                <button
+                  onClick={handlePayment}
+                  disabled={paymentLoading}
+                  className="mt-6 w-full rounded-xl bg-indigo-600 py-3 text-white font-semibold shadow hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {paymentLoading ? 'Processing...' : 'Get Access Now'}
+                </button>
+                
+                <p className="mt-3 text-xs text-slate-500">
+                  Secure payment via Stripe. Cancel anytime.
+                </p>
+              </div>
+            </div>
+          ) : briefs.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-slate-600">No briefs in this category yet.</p>
+              <button onClick={onClose} className="mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-500">
+                Browse other categories →
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {briefs.map((brief) => (
+                <div key={brief.id} className="rounded-2xl bg-white p-6 ring-1 ring-slate-200">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold">{brief.title}</h3>
+                      <div className="mt-1 flex items-center gap-4 text-sm text-slate-600">
+                        <span>Budget: €{brief.budgetMin || '?'} - €{brief.budgetMax || '?'}</span>
+                        <span>Timeline: {brief.timeline}</span>
+                      </div>
+                      <p className="mt-3 text-slate-700 line-clamp-3">{brief.details}</p>
+                      
+                      {(brief.name || brief.email) && (
+                        <div className="mt-4 rounded-lg bg-slate-50 p-3">
+                          <div className="text-sm font-medium text-slate-700">Contact:</div>
+                          {brief.name && <div className="text-sm text-slate-600">{brief.name}</div>}
+                          {brief.email && (
+                            <a href={`mailto:${brief.email}`} className="text-sm text-indigo-600 hover:text-indigo-500">
+                              {brief.email}
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="ml-4 text-xs text-slate-500">
+                      {new Date(brief.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function FeaturedPros() {
+  const pros = [
+    { name: 'Northwind Studio', tags: ['Web', 'Branding'], rating: 4.8, projects: 126 },
+    { name: 'Pixel&Paper', tags: ['E‑com', 'UI/UX'], rating: 4.6, projects: 98 },
+    { name: 'Bold Web Co', tags: ['Webflow', 'SEO'], rating: 4.9, projects: 203 },
+    { name: 'Aurora Creative', tags: ['Logo', 'Illustration'], rating: 4.7, projects: 152 },
+  ]
+  return (
+    <section id="pros" className="py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-end justify-between">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Featured professionals</h2>
+            <p className="mt-2 text-slate-600">Browse verified profiles with ratings and recent work.</p>
+          </div>
+          <a href="#" className="text-sm font-semibold text-indigo-700 hover:text-indigo-600">See all →</a>
+        </div>
+
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {pros.map((p) => (
+            <div key={p.name} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 ring-2 ring-white" />
+                <div>
+                  <div className="font-semibold">{p.name}</div>
+                  <div className="text-sm text-slate-500">{p.tags.join(' • ')}</div>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between text-sm text-slate-600">
+                <div className="flex items-center gap-1"><Star className="h-4 w-4 text-amber-500" /><span className="font-medium">{p.rating}</span></div>
+                <div>{p.projects} projects</div>
+              </div>
+              <button className="mt-4 w-full rounded-xl border border-slate-300 bg-white py-2 text-sm font-semibold hover:bg-slate-50">View profile</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Stats() {
+  const items = [
+    { label: 'Pros in network', value: '8,000+' },
+    { label: 'Projects posted', value: '10,000+' },
+    { label: 'Avg. response time', value: '~24h' },
+    { label: 'Client satisfaction', value: '4.8/5' },
+  ]
+  return (
+    <section className="py-16 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-6 rounded-3xl bg-slate-50 p-8 ring-1 ring-slate-100 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map((it) => (
+            <div key={it.label} className="text-center">
+              <div className="text-3xl font-extrabold tracking-tight">{it.value}</div>
+              <div className="mt-1 text-sm text-slate-600">{it.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Testimonials() {
+  const ts = [
+    {
+      quote: 'We posted a brief on Monday and signed on a brilliant studio by Wednesday. Smooth and transparent process.',
+      name: 'Maya K.',
+      role: 'CMO, TinyTreats',
+    },
+    {
+      quote: 'Clear apples‑to‑apples proposals made it easy to choose. We love the built‑in messaging and milestones.',
+      name: 'Jon R.',
+      role: 'Founder, SitStand Co',
+    },
+  ]
+  return (
+    <section className="py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Loved by growing teams</h2>
+        </div>
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          {ts.map((t, i) => (
+            <figure key={i} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              <blockquote className="text-lg tracking-tight">"{t.quote}"</blockquote>
+              <figcaption className="mt-4 text-sm text-slate-600">{t.name} — {t.role}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function FAQ() {
+  const faqs = [
+    {
+      q: 'Is posting a brief free?',
+      a: 'Yes. Posting is free. You only pay the professional you hire.'
+    },
+    {
+      q: 'How quickly will I get offers?',
+      a: 'Most briefs receive initial responses within 24 hours.'
+    },
+    {
+      q: 'Can I invite my own vendors?',
+      a: 'Absolutely. Share a private link and your vendors can submit proposals here.'
+    },
+    {
+      q: 'Do you vet professionals?',
+      a: 'Profiles include verified details, portfolio links and client ratings to help you decide.'
+    },
+  ]
+  return (
+    <section id="faq" className="py-20 bg-gradient-to-b from-slate-50 to-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Frequently asked questions</h2>
+        </div>
+        <div className="mx-auto mt-10 max-w-3xl divide-y divide-slate-200 rounded-2xl bg-white ring-1 ring-slate-200">
+          {faqs.map((f, i) => (
+            <details key={f.q} className="group p-6">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+                <span className="text-base font-semibold">{f.q}</span>
+                <span className="rounded-full border border-slate-300 p-1 text-slate-500 group-open:rotate-45 transition"><Plus className="h-4 w-4"/></span>
+              </summary>
+              <p className="mt-3 text-slate-600">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function CTA({ onCTAClick }) {
+  return (
+    <section className="py-20">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-fuchsia-600 p-8 text-white shadow">
+          <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-white/20 blur-2xl"/>
+          <h2 className="text-3xl font-bold tracking-tight">Ready to meet your next creative partner?</h2>
+          <p className="mt-2 text-white/90">Post a brief now and start getting offers today.</p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <button onClick={onCTAClick} className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-slate-900 font-semibold shadow hover:bg-slate-100">
+              <Sparkle className="h-5 w-5" /> Post a brief
+            </button>
+            <a href="#how" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-3 font-semibold text-white/90 hover:bg-white/10">How it works</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="border-t border-slate-200 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Logo className="h-7 w-7" />
+              <span className="font-semibold">BriefBridge</span>
+            </div>
+            <p className="mt-3 text-sm text-slate-600">A modern way to hire
