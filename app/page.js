@@ -558,4 +558,42 @@ function Footer() {
               <Logo className="h-7 w-7" />
               <span className="font-semibold">BriefBridge</span>
             </div>
-            <p className="mt-3 text-sm text-slate-600">A modern way to hire
+<p className="mt-3 text-sm text-slate-600">A modern way to hire creative and web professionals.</p>
+</div>
+          <div>
+            <div className="text-sm font-semibold">Product</div>
+            <ul className="mt-2 space-y-2 text-sm text-slate-600">
+              <li><a href="#how" className="hover:text-slate-900">How it works</a></li>
+              <li><a href="#categories" className="hover:text-slate-900">Categories</a></li>
+              <li><a href="#pros" className="hover:text-slate-900">Professionals</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="text-sm font-semibold">Company</div>
+            <ul className="mt-2 space-y-2 text-sm text-slate-600">
+              <li><a href="#" className="hover:text-slate-900">About</a></li>
+              <li><a href="#" className="hover:text-slate-900">Blog</a></li>
+              <li><a href="#" className="hover:text-slate-900">Careers</a></li>
+            </ul>
+          </div>
+          <div>
+            <div className="text-sm font-semibold">Support</div>
+            <ul className="mt-2 space-y-2 text-sm text-slate-600">
+              <li><a href="#faq" className="hover:text-slate-900">Help center</a></li>
+              <li><a href="#" className="hover:text-slate-900">Contact</a></li>
+              <li><a href="#" className="hover:text-slate-900">Privacy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-200 py-6 text-sm text-slate-500 sm:flex-row">
+          <div>© {new Date().getFullYear()} BriefBridge. All rights reserved.</div>
+          <div className="flex items-center gap-4">
+            <a href="#" className="hover:text-slate-700">Terms</a>
+            <a href="#" className="hover:text-slate-700">Security</a>
+            <a href="#" className="hover:text-slate-700">Status</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  )
+}
