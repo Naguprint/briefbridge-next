@@ -172,11 +172,26 @@ function HowItWorks() {
 
 function Categories({ onCTAClick }) {
   const [selectedCategory, setSelectedCategory] = useState(null)
+  const [briefCounts, setBriefCounts] = useState({})
   
   const cats = [
     'Websites', 'E-commerce', 'Logos & Branding', 'Graphic Design', 'UI/UX', 'Illustration',
-    'SEO', 'Copywriting', 'Social Media', 'Photography', 'Video', 'Programming'
+    'SEO', 'Copywriting', 'Social Media', 'Photography', 'Video', 'Programming', 'Other'
   ]
+  
+  // Hämta antal briefs per kategori
+  useEffect(() => {
+    fetch('/api/briefs')
+      .then(res => res.json())
+      .then(data => {
+        const counts = {}
+        cats.forEach(cat => {
+          counts[cat] = data.briefs.filter(b => b.category === cat).length
+        })
+        setBriefCounts(counts)
+      })
+      .catch(err => console.error('Failed to fetch brief counts:', err))
+  }, [])
   
   return (
     <>
@@ -194,13 +209,22 @@ function Categories({ onCTAClick }) {
               <button 
                 key={c} 
                 onClick={() => setSelectedCategory(c)}
-                className="group rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md text-left"
+                className="group relative rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md text-left"
               >
+                {briefCounts[c] > 0 && (
+                  <div className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+                    {briefCounts[c]}
+                  </div>
+                )}
                 <div className="flex items-center justify-between">
                   <h3 className="text-base font-semibold">{c}</h3>
                   <ArrowRight className="h-5 w-5 text-slate-400 group-hover:text-slate-700" />
                 </div>
-                <p className="mt-1 text-sm text-slate-600">Hand-picked freelancers & studios.</p>
+                <p className="mt-1 text-sm text-slate-600">
+                  {briefCounts[c] > 0 
+                    ? `${briefCounts[c]} active brief${briefCounts[c] !== 1 ? 's' : ''}`
+                    : 'Hand-picked freelancers & studios.'}
+                </p>
               </button>
             ))}
           </div>
@@ -701,19 +725,20 @@ function BriefForm({ onClose }) {
           
           <div className="grid gap-2">
             <label className="text-sm font-medium">Category</label>
-            <select 
-              name="category"
-              className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option>Websites</option>
-              <option>E-commerce</option>
-              <option>Logos & Branding</option>
-              <option>UI/UX</option>
-              <option>Graphic Design</option>
-              <option>Copywriting</option>
-              <option>SEO</option>
-              <option>Programming</option>
-            </select>
+          <select 
+  name="category"
+  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+>
+  <option>Websites</option>
+  <option>E-commerce</option>
+  <option>Logos & Branding</option>
+  <option>UI/UX</option>
+  <option>Graphic Design</option>
+  <option>Copywriting</option>
+  <option>SEO</option>
+  <option>Programming</option>
+  <option>Other</option>
+</select>
           </div>
           
           <div className="grid gap-2">
