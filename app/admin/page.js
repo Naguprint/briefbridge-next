@@ -52,25 +52,30 @@ export default function AdminPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Delete this brief?')) return;
+ const handleDelete = async (id) => {
+  if (!confirm('Delete this brief?')) return;
+  
+  setLoading(true);
+  try {
+    const res = await fetch('/api/admin/briefs', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
     
-    setLoading(true);
-    try {
-      const res = await fetch('/api/admin/briefs', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
-      });
-      
-      if (res.ok) {
-        fetchBriefs();
-      }
-    } catch (error) {
-      alert('Failed to delete');
+    if (res.ok) {
+      fetchBriefs();
+    } else {
+      const error = await res.json();
+      console.error('Delete error:', error);
+      alert(`Failed to delete: ${error.error || 'Unknown error'}`);
     }
-    setLoading(false);
-  };
+  } catch (error) {
+    console.error('Delete error:', error);
+    alert('Failed to delete');
+  }
+  setLoading(false);
+};
 
   const handleEditBrief = async (e) => {
     e.preventDefault();
