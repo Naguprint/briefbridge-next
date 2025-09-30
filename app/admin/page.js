@@ -57,7 +57,7 @@ export default function AdminPage() {
   
   setLoading(true);
   try {
-    const res = await fetch('/api/admin/briefs', {
+    const res = await fetch('/api/briefs', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })
@@ -82,7 +82,7 @@ export default function AdminPage() {
     setLoading(true);
     
     try {
-      const res = await fetch('/api/admin/briefs', {
+      const res = await fetch('/api/briefs', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ brief: editingBrief })
