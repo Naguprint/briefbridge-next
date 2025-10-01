@@ -10,9 +10,11 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('briefs');
   const [editingBrief, setEditingBrief] = useState(null);
+  const [siteContent, setSiteContent] = useState({});
+  const [editingContent, setEditingContent] = useState(null);
   const router = useRouter();
 
-  // Featured professionals (hardcoded for now, can be made dynamic later)
+  // Featured professionals (hardcoded for now)
   const [professionals, setProfessionals] = useState([
     { id: 1, name: 'Northwind Studio', tags: ['Web', 'Branding'], rating: 4.8, projects: 126 },
     { id: 2, name: 'Pixel&Paper', tags: ['E-com', 'UI/UX'], rating: 4.6, projects: 98 },
@@ -39,6 +41,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (isAuthenticated) {
       fetchBriefs();
+      fetchSiteContent();
     }
   }, [isAuthenticated]);
 
@@ -52,30 +55,43 @@ export default function AdminPage() {
     }
   };
 
- const handleDelete = async (id) => {
-  if (!confirm('Delete this brief?')) return;
-  
-  setLoading(true);
-  try {
-    const res = await fetch('/api/briefs', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    });
-    
-    if (res.ok) {
-      fetchBriefs();
-    } else {
-      const error = await res.json();
-      console.error('Delete error:', error);
-      alert(`Failed to delete: ${error.error || 'Unknown error'}`);
+  const fetchSiteContent = async () => {
+    try {
+      const res = await fetch('/api/site-content');
+      const data = await res.json();
+      const contentObj = {};
+      data.content.forEach(c => {
+        contentObj[c.id] = c.content;
+      });
+      setSiteContent(contentObj);
+    } catch (error) {
+      console.error('Failed to fetch content:', error);
     }
-  } catch (error) {
-    console.error('Delete error:', error);
-    alert('Failed to delete');
-  }
-  setLoading(false);
-};
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Delete this brief?')) return;
+    
+    setLoading(true);
+    try {
+      const res = await fetch('/api/briefs', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      
+      if (res.ok) {
+        fetchBriefs();
+      } else {
+        const error = await res.json();
+        alert(`Failed to delete: ${error.error}`);
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete');
+    }
+    setLoading(false);
+  };
 
   const handleEditBrief = async (e) => {
     e.preventDefault();
@@ -91,11 +107,34 @@ export default function AdminPage() {
       if (res.ok) {
         fetchBriefs();
         setEditingBrief(null);
+      } else {
+        alert('Failed to update');
       }
     } catch (error) {
       alert('Failed to update');
     }
     setLoading(false);
+  };
+
+  const handleSaveContent = async (contentId) => {
+    try {
+      const res = await fetch('/api/site-content', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          id: contentId, 
+          content: editingContent 
+        })
+      });
+      
+      if (res.ok) {
+        fetchSiteContent();
+        setEditingContent(null);
+        alert('Content updated successfully!');
+      }
+    } catch (error) {
+      alert('Failed to update content');
+    }
   };
 
   const exportBriefs = () => {
@@ -179,9 +218,15 @@ export default function AdminPage() {
           >
             Featured Professionals
           </button>
+          <button
+            onClick={() => setActiveTab('content')}
+            className={`px-4 py-2 rounded ${activeTab === 'content' ? 'bg-indigo-600 text-white' : 'bg-white'}`}
+          >
+            Site Content
+          </button>
         </div>
 
-        {/* Edit Modal */}
+        {/* Edit Brief Modal */}
         {editingBrief && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg p-6 max-w-lg w-full">
@@ -214,6 +259,26 @@ export default function AdminPage() {
                       <option>Other</option>
                     </select>
                   </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-sm font-medium">Min Budget</label>
+                      <input
+                        type="number"
+                        value={editingBrief.budgetMin || ''}
+                        onChange={(e) => setEditingBrief({...editingBrief, budgetMin: parseInt(e.target.value)})}
+                        className="w-full p-2 border rounded"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Max Budget</label>
+                      <input
+                        type="number"
+                        value={editingBrief.budgetMax || ''}
+                        onChange={(e) => setEditingBrief({...editingBrief, budgetMax: parseInt(e.target.value)})}
+                        className="w-full p-2 border rounded"
+                      />
+                    </div>
+                  </div>
                   <div className="flex gap-2">
                     <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded">
                       Save
@@ -232,7 +297,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Content */}
+        {/* Content Tabs */}
         {activeTab === 'briefs' ? (
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-4">Briefs</h2>
@@ -275,7 +340,7 @@ export default function AdminPage() {
               </table>
             </div>
           </div>
-        ) : (
+        ) : activeTab === 'professionals' ? (
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-4">Featured Professionals</h2>
             <p className="text-gray-600 mb-4">
@@ -293,6 +358,67 @@ export default function AdminPage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4">Site Content</h2>
+            
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-semibold mb-2">Hero Section</h3>
+                <div className="space-y-2">
+                  <input
+                    placeholder="Title"
+                    value={editingContent?.title || siteContent.hero?.title || ''}
+                    onChange={(e) => setEditingContent({...siteContent.hero, title: e.target.value})}
+                    className="w-full p-2 border rounded"
+                  />
+                  <input
+                    placeholder="Subtitle"
+                    value={editingContent?.subtitle || siteContent.hero?.subtitle || ''}
+                    onChange={(e) => setEditingContent({...siteContent.hero, subtitle: e.target.value})}
+                    className="w-full p-2 border rounded"
+                  />
+                  <textarea
+                    placeholder="Description"
+                    value={editingContent?.description || siteContent.hero?.description || ''}
+                    onChange={(e) => setEditingContent({...siteContent.hero, description: e.target.value})}
+                    className="w-full p-2 border rounded"
+                    rows="3"
+                  />
+                  <button
+                    onClick={() => handleSaveContent('hero')}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded"
+                  >
+                    Save Hero Content
+                  </button>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold mb-2">Footer</h3>
+                <div className="space-y-2">
+                  <input
+                    placeholder="Company Name"
+                    value={editingContent?.company_name || siteContent.footer?.company_name || ''}
+                    onChange={(e) => setEditingContent({...siteContent.footer, company_name: e.target.value})}
+                    className="w-full p-2 border rounded"
+                  />
+                  <input
+                    placeholder="Tagline"
+                    value={editingContent?.tagline || siteContent.footer?.tagline || ''}
+                    onChange={(e) => setEditingContent({...siteContent.footer, tagline: e.target.value})}
+                    className="w-full p-2 border rounded"
+                  />
+                  <button
+                    onClick={() => handleSaveContent('footer')}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded"
+                  >
+                    Save Footer Content
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
