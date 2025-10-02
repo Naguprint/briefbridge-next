@@ -2,9 +2,12 @@ import { neon } from '@neondatabase/serverless';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Remove this line if it exists:
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ... dina andra funktioner (GET, DELETE, PUT) ...
+export async function GET() {
+  // ... existing GET code ...
+}
 
 export async function POST(request) {
   try {
@@ -21,11 +24,13 @@ export async function POST(request) {
               ${brief.timeline}, ${brief.details}, ${brief.name ?? null}, ${brief.email ?? null});
     `;
     
-    // Send email notification
+    // Initialize Resend inside the function
     if (process.env.RESEND_API_KEY && process.env.ADMIN_EMAIL) {
       try {
+        const resend = new Resend(process.env.RESEND_API_KEY);  // ← Move initialization here
+        
         await resend.emails.send({
-          from: 'BriefBridge <onboarding@resend.dev>',  // Använd denna tills du verifierar din domän
+          from: 'onboarding@resend.dev',
           to: process.env.ADMIN_EMAIL,
           subject: `New Brief: ${brief.title}`,
           html: `
@@ -48,4 +53,12 @@ export async function POST(request) {
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+export async function DELETE(request) {
+  // ... existing DELETE code ...
+}
+
+export async function PUT(request) {
+  // ... existing PUT code ...
 }

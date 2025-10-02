@@ -1,10 +1,10 @@
 import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function GET() {
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY);  // ← Initialize here
+    
     const result = await resend.emails.send({
       from: 'onboarding@resend.dev',
       to: process.env.ADMIN_EMAIL,
