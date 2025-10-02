@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const result = await resend.emails.send({
       from: 'onboarding@resend.dev',
-      to: process.env.ADMIN_EMAIL || 'din-email@exempel.com', // Byt till din email
+      to: process.env.ADMIN_EMAIL,
       subject: 'Test Email from BriefBridge',
       html: '<p>This is a test email. If you receive this, Resend is working!</p>'
     });
